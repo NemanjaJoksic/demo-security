@@ -4,7 +4,8 @@ This is small library built on top of spring boot framework used for user authen
 
 By default, 2 APIs are provided for handling user registration and obtaining access token.<br/>
 * ``/register`` - POST method which receives user information in body of HTTP request. User has two properties, username and password.<br/>
-* ``/login`` - POST method which in Authorization header receives username and password in format ``Authorization: Basic <credentials>`` where ``<cretentials>`` is is the base64 encoding of username and password joined by a single colon `:`. If provided username password pair is correct return, access token which then should be used for accessing other APIs.<br/>
+* ``/login`` - POST method which in Authorization header receives username and password in format ``Authorization: Basic <credentials>`` where ``<cretentials>`` is is the base64 encoding of username and password joined by a single colon `:`. If provided username password pair is correct return, access token which then should be used for accessing other APIs.
+
 All other APIs are accessible only if user is successfully authenticated.
 
 There are few properties which should be used for application configurations: <br/>
