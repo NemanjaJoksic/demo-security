@@ -46,7 +46,9 @@ public class AuthenticationAspect {
             return (ResponseEntity) joinPoint.proceed();
         
         SecurityContext.setAuthentication(authenticationService.authenticate(request));
-        return (ResponseEntity) joinPoint.proceed();
+        ResponseEntity response = (ResponseEntity) joinPoint.proceed();
+        SecurityContext.setAuthentication(null);
+        return response;
     }
     
 }
