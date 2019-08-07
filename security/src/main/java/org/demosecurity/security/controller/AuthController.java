@@ -30,12 +30,12 @@ public class AuthController {
     private AuthenticationService authenticationService;
     
     @PostMapping("/login")
-    public ResponseEntity getAuthToken(HttpServletRequest request) throws Exception {
+    public ResponseEntity login(HttpServletRequest request) throws Exception {
         return new ResponseEntity(authenticationService.obtainAccessToken(request), HttpStatus.OK);
     }
     
     @PostMapping("/register")
-    public ResponseEntity createUser(@RequestBody User user, HttpServletRequest request) throws Exception {
+    public ResponseEntity register(@RequestBody User user, HttpServletRequest request) throws Exception {
         User createdUser = userService.createUser(user, request.getRemoteHost());
         createdUser.setPassword(null);
         return new ResponseEntity(createdUser, HttpStatus.CREATED);
