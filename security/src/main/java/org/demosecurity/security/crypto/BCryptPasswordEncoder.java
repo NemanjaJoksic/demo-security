@@ -5,6 +5,7 @@
  */
 package org.demosecurity.security.crypto;
 
+import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -16,24 +17,24 @@ import org.springframework.stereotype.Component;
  * @author joksin
  */
 @Component
-@ConditionalOnProperty(name = "security.password.encoding.type", havingValue = "none")
-public class NotEncodePasswordEncoder implements PasswordEncoder, InitializingBean {
+@ConditionalOnProperty(name = "security.password.encoding.type", havingValue = "bcrypt")
+public class BCryptPasswordEncoder implements PasswordEncoder, InitializingBean {
 
     private static final Logger logger = LoggerFactory.getLogger(NotEncodePasswordEncoder.class);
 
     @Override
     public String encode(String rawPassword) {
-        return rawPassword;
+        return BCrypt.hashpw(rawPassword, BCrypt.gensalt());
     }
 
     @Override
     public boolean matches(String rawPassword, String encodedPassword) {
-        return rawPassword.equals(encodedPassword);
+        return BCrypt.checkpw(rawPassword, encodedPassword);
     }
-
+    
     @Override
     public void afterPropertiesSet() throws Exception {
-        logger.info("NotEncodePasswordEncoder is configured");
+        logger.info("BCryptPasswordEncoder is configured");
     }
-
+    
 }
