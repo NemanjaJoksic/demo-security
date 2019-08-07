@@ -33,10 +33,10 @@ public class JwtTokenAuthenticationService extends TokenAuthenticationService im
 
     private static final Logger logger = LoggerFactory.getLogger(JwtTokenAuthenticationService.class);
     
-    @Value("${security.authentication.jwt.secret.key}")
+    @Value("${security.authentication.jwt.secret-key}")
     private String secretKey;
     
-    @Value("${security.authentication.jwt.expiration.time}")
+    @Value("${security.authentication.jwt.expiration-time}")
     private Integer expirationTime;
     
     @Override
