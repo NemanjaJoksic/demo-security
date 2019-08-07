@@ -6,6 +6,7 @@
 package org.demosecurity.security.dao;
 
 import org.demosecurity.security.model.User;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Repository;
  * @author joksin
  */
 @Repository
+@ConditionalOnProperty(name = "security.user.store.type", havingValue = "rdb")
 public interface UserDao extends JpaRepository<User, String> {
     
     public User findByUsername(String username);

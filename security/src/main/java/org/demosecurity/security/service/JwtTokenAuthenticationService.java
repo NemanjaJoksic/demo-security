@@ -11,7 +11,6 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import java.util.Date;
-import org.demosecurity.security.SecurityConfig;
 import org.demosecurity.security.exception.AuthenticationException;
 import org.demosecurity.security.exception.ExpiredJwtTokenException;
 import org.demosecurity.security.exception.InvalidJwtTokenException;
@@ -20,7 +19,7 @@ import org.demosecurity.security.model.TokenDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
@@ -33,8 +32,12 @@ import org.springframework.stereotype.Service;
 public class JwtTokenAuthenticationService extends TokenAuthenticationService implements InitializingBean {
 
     private static final Logger logger = LoggerFactory.getLogger(JwtTokenAuthenticationService.class);
-    @Autowired
-    private SecurityConfig config;
+    
+    @Value("${security.authentication.jwt.secret.key}")
+    private String secretKey;
+    
+    @Value("${security.authentication.jwt.expiration.time}")
+    private Integer expirationTime;
     
     @Override
     protected TokenDetails generateToken(String username) {
@@ -43,13 +46,13 @@ public class JwtTokenAuthenticationService extends TokenAuthenticationService im
                 .setClaims(claims)
                 .setSubject(username)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + config.getJwtTokenExpirationTime() * 1000))
-                .signWith(SignatureAlgorithm.HS512, config.getJwtTokenSecretKey())
+                .setExpiration(new Date(System.currentTimeMillis() + expirationTime * 1000))
+                .signWith(SignatureAlgorithm.HS512, secretKey)
                 .compact();
 
         return new TokenDetails(
                 username,
-                config.getJwtTokenExpirationTime(),
+                expirationTime,
                 TokenDetails.BEARER,
                 accessToken
         );
@@ -58,7 +61,7 @@ public class JwtTokenAuthenticationService extends TokenAuthenticationService im
     @Override
     protected Authentication decodeToken(String token) throws AuthenticationException {
         try {
-            Jws<Claims> jwsClaims = Jwts.parser().setSigningKey(config.getJwtTokenSecretKey()).parseClaimsJws(token);
+            Jws<Claims> jwsClaims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
             Authentication authentication = new Authentication(jwsClaims.getBody().getSubject());
             return authentication;
         } catch (ExpiredJwtException ex) {

@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author joksin
  */
 @RestController
-public class TestController {
+public class HelloController {
     
     @GetMapping("/hello")
     public ResponseEntity test() throws Exception {
