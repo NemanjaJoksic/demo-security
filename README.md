@@ -6,6 +6,7 @@ By default, 2 APIs are provided for handling user registration and obtaining acc
 ``/register`` - POST method which receives user information in body of HTTP request. User has two properties, username and password.<br/>
 ``/login`` - POST method which in Authorization header receives username and password in format ``Authorization: Basic <credentials>`` where ``<cretentials>`` is is the base64 encoding of username and password joined by a single colon `:`. If provided username password pair is correct return, access token which then should be used for accessing other APIs.<br/>
 All other APIs are accessible only if user is successfully authenticated.
+
 There are few properties which should be used for application configurations: <br/>
 ``security.user.store.type`` - currently only available value is ``rbd`` and users are stored in relational database in table ``USER`` with 3 columns: ``USERNAME``, ``HASHED_PASSWORD``,  ``CREATION_IP_ADDRESS``.<br/>
 ``security.password.encoding.type`` - currently there are two available values: ``none`` and ``bcrypt``. By choosing ``none`` passwords will be store in raw format and it is not recommended.  Another option is ``bcrypt`` and then password will be encoded by ``BCRYPT`` algorithm and then stored.<br/>
