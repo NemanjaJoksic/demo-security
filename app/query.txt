@@ -1,0 +1,7 @@
+select * from PRIVATE_LEAGUE pl
+inner join PRIVATE_LEAGUE_TEAMS plt
+on pl.ID = plt.PRIVATE_LEAGUE_ID
+inner join FANTASY_TEAM ft
+on plt.FANTASY_TEAM_ID = ft.ID
+where pl.id = 1
+order by TOTAL_POINTS desc, BUDGET desc
