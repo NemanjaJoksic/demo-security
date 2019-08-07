@@ -17,7 +17,11 @@ import org.demosecurity.security.exception.ExpiredJwtTokenException;
 import org.demosecurity.security.exception.InvalidJwtTokenException;
 import org.demosecurity.security.model.Authentication;
 import org.demosecurity.security.model.TokenDetails;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 /**
@@ -25,8 +29,10 @@ import org.springframework.stereotype.Service;
  * @author joksin
  */
 @Service
-public class JwtTokenAuthenticationService extends TokenAuthenticationService {
+@ConditionalOnProperty(name = "security.authentication.type", havingValue = "jwt")
+public class JwtTokenAuthenticationService extends TokenAuthenticationService implements InitializingBean {
 
+    private static final Logger logger = LoggerFactory.getLogger(JwtTokenAuthenticationService.class);
     @Autowired
     private SecurityConfig config;
     
@@ -60,6 +66,11 @@ public class JwtTokenAuthenticationService extends TokenAuthenticationService {
         } catch (Exception ex) {
             throw new InvalidJwtTokenException();
         }
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        logger.info("JwtTokenAuthenticationService is configured");
     }
     
 }

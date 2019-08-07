@@ -6,7 +6,6 @@
 package org.demosecurity.security.controller;
 
 import javax.servlet.http.HttpServletRequest;
-import org.demosecurity.security.exception.AuthenticationException;
 import org.demosecurity.security.model.User;
 import org.demosecurity.security.service.AuthenticationService;
 import org.demosecurity.security.service.UserService;
@@ -31,12 +30,12 @@ public class AuthController {
     private AuthenticationService authenticationService;
     
     @PostMapping("/login")
-    public ResponseEntity getAuthToken(HttpServletRequest request) throws AuthenticationException {
+    public ResponseEntity getAuthToken(HttpServletRequest request) throws Exception {
         return new ResponseEntity(authenticationService.obtainAccessToken(request), HttpStatus.OK);
     }
     
     @PostMapping("/register")
-    public ResponseEntity createUser(@RequestBody User user, HttpServletRequest request) {
+    public ResponseEntity createUser(@RequestBody User user, HttpServletRequest request) throws Exception {
         User createdUser = userService.createUser(user, request.getRemoteHost());
         createdUser.setPassword(null);
         return new ResponseEntity(createdUser, HttpStatus.CREATED);

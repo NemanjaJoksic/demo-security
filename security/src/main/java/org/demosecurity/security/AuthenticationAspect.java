@@ -28,7 +28,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 @Aspect
 public class AuthenticationAspect {
     
-    private static final String CONTROLLER_JOIN_POINT = "execution(* org.demosecurity..*Controller**.*(..))";
+    private static final String CONTROLLER_JOIN_POINT = "execution(* *..*Controller**.*(..))";
 
     private static final Logger logger = LoggerFactory.getLogger(AuthenticationAspect.class);
     
@@ -37,7 +37,7 @@ public class AuthenticationAspect {
     
     @Around(value = CONTROLLER_JOIN_POINT)
     public ResponseEntity checkAuthentication(ProceedingJoinPoint joinPoint) throws GeneralException, Throwable {
-        logger.info("Checking authentication");
+        logger.debug("Checking authentication");
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
         
