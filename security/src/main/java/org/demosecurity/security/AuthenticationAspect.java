@@ -6,12 +6,10 @@
 package org.demosecurity.security;
 
 import javax.servlet.http.HttpServletRequest;
-import org.apache.logging.log4j.ThreadContext;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.demosecurity.commons.exception.GeneralException;
-import org.demosecurity.commons.model.ApiResponse;
 import org.demosecurity.security.service.AuthenticationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,18 +46,6 @@ public class AuthenticationAspect {
             return (ResponseEntity) joinPoint.proceed();
         
         SecurityContext.setAuthentication(authenticationService.authenticate(request));
-        
-//        try {
-//            ThreadContext.put("username", authenticationService.authenticate(request));
-//        } catch (GeneralException ex) {
-//            logger.error(ex.getMessage(), ex);
-//            return new ResponseEntity(ApiResponse.exception(ex), ex.getHttpStatus());
-//        } catch (Exception ex) {
-//            logger.error(ex.getMessage(), ex);
-//            GeneralException gEx = new GeneralException(ex);
-//            return new ResponseEntity(ApiResponse.exception(gEx), gEx.getHttpStatus());
-//        }
-        
         return (ResponseEntity) joinPoint.proceed();
     }
     

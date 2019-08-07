@@ -5,7 +5,6 @@
  */
 package org.demosecurity.security.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
