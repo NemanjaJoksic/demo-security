@@ -50,7 +50,7 @@ public abstract class TokenAuthenticationService implements AuthenticationServic
                 if (!passwordEncoder.matches(credentials[1], user.getPassword()))
                     throw new WrongPasswordException();
 
-                return generateToken(credentials[0]);
+                return generateToken(user);
             } else {
                 throw new UserNotExistException(credentials[0]);
             }
@@ -65,7 +65,11 @@ public abstract class TokenAuthenticationService implements AuthenticationServic
         String authorizationHeader = request.getHeader(AUTHORIZATION_HEADER);
         if (authorizationHeader != null) {
             logger.debug(authorizationHeader);
-            return decodeToken(authorizationHeader.split(TokenDetails.BEARER + " ")[1]);
+            Authentication authentication = decodeToken(authorizationHeader.split(TokenDetails.BEARER + " ")[1]);
+            authentication.setPath(request.getServletPath());
+            authentication.setMethod(request.getMethod());
+            logger.debug("{}", authentication);
+            return authentication;
         } else {
             throw new MissingAuthorizationHeaderException();
         }
@@ -86,6 +90,6 @@ public abstract class TokenAuthenticationService implements AuthenticationServic
 
     }
 
-    protected abstract TokenDetails generateToken(String username) throws AuthenticationException;
+    protected abstract TokenDetails generateToken(User user) throws AuthenticationException;
     protected abstract Authentication decodeToken(String token) throws AuthenticationException;
 }

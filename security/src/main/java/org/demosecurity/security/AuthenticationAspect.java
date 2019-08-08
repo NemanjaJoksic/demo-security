@@ -10,7 +10,9 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.demosecurity.commons.exception.GeneralException;
+import org.demosecurity.security.model.Authentication;
 import org.demosecurity.security.service.AuthenticationService;
+import org.demosecurity.security.service.AuthorizationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +37,9 @@ public class AuthenticationAspect {
     @Autowired
     private AuthenticationService authenticationService;
     
+    @Autowired
+    private AuthorizationService authorizationService;
+    
     @Around(value = CONTROLLER_JOIN_POINT)
     public ResponseEntity checkAuthentication(ProceedingJoinPoint joinPoint) throws GeneralException, Throwable {
         logger.debug("Checking authentication");
@@ -45,7 +50,9 @@ public class AuthenticationAspect {
         if(uri.equals("/login") || uri.equals("/register"))
             return (ResponseEntity) joinPoint.proceed();
         
-        SecurityContext.setAuthentication(authenticationService.authenticate(request));
+        Authentication authentication = authenticationService.authenticate(request);
+        authentication = authorizationService.authorize(authentication);
+        SecurityContext.setAuthentication(authentication);
         ResponseEntity response = (ResponseEntity) joinPoint.proceed();
         SecurityContext.setAuthentication(null);
         return response;

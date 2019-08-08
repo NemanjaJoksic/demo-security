@@ -11,11 +11,15 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 import org.demosecurity.security.exception.AuthenticationException;
 import org.demosecurity.security.exception.ExpiredJwtTokenException;
 import org.demosecurity.security.exception.InvalidJwtTokenException;
 import org.demosecurity.security.model.Authentication;
+import org.demosecurity.security.model.Role;
 import org.demosecurity.security.model.TokenDetails;
+import org.demosecurity.security.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -40,18 +44,21 @@ public class JwtTokenAuthenticationService extends TokenAuthenticationService im
     private Integer expirationTime;
     
     @Override
-    protected TokenDetails generateToken(String username) {
+    protected TokenDetails generateToken(User user) {
         Claims claims = Jwts.claims();
+        List<String> roles = getRoles(user.getRoles());
+        claims.put("roles", roles);
         String accessToken = Jwts.builder()
                 .setClaims(claims)
-                .setSubject(username)
+                .setSubject(user.getUsername())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expirationTime * 1000))
                 .signWith(SignatureAlgorithm.HS512, secretKey)
                 .compact();
 
         return new TokenDetails(
-                username,
+                user.getUsername(),
+                roles,
                 expirationTime,
                 TokenDetails.BEARER,
                 accessToken
@@ -62,7 +69,9 @@ public class JwtTokenAuthenticationService extends TokenAuthenticationService im
     protected Authentication decodeToken(String token) throws AuthenticationException {
         try {
             Jws<Claims> jwsClaims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-            Authentication authentication = new Authentication(jwsClaims.getBody().getSubject());
+            String username = jwsClaims.getBody().getSubject();
+            List<String> roles = jwsClaims.getBody().get("roles", List.class);
+            Authentication authentication = new Authentication(username, roles);
             return authentication;
         } catch (ExpiredJwtException ex) {
             throw new ExpiredJwtTokenException();
@@ -74,6 +83,12 @@ public class JwtTokenAuthenticationService extends TokenAuthenticationService im
     @Override
     public void afterPropertiesSet() throws Exception {
         logger.info("JwtTokenAuthenticationService is configured");
+    }
+
+    private List<String> getRoles(List<Role> roles) {
+        List<String> roleNames = new LinkedList<>();
+        roles.forEach(role -> roleNames.add(role.getName()));
+        return roleNames;
     }
     
 }

@@ -10,6 +10,7 @@ import org.demosecurity.security.SecurityContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -20,7 +21,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class HelloController {
     
     @GetMapping("/hello")
-    public ResponseEntity test() throws Exception {
+    public ResponseEntity helloGet() throws Exception {
+        String message = "Hello " + SecurityContext.current().getAuthentication().getPrincipal() + "!";
+        return new ResponseEntity(ApiResponse.success(message), HttpStatus.OK);
+    }
+    
+    @PostMapping("/hello")
+    public ResponseEntity helloPost() throws Exception {
         String message = "Hello " + SecurityContext.current().getAuthentication().getPrincipal() + "!";
         return new ResponseEntity(ApiResponse.success(message), HttpStatus.OK);
     }
