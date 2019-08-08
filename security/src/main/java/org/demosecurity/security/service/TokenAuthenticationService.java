@@ -32,7 +32,7 @@ public abstract class TokenAuthenticationService implements AuthenticationServic
     private static final Logger logger = LoggerFactory.getLogger(TokenAuthenticationService.class);
 
     @Autowired
-    private RdbUserService userService;
+    private UserService userService;
     
     @Autowired
     private PasswordEncoder passwordEncoder;
