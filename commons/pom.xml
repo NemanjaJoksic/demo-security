@@ -10,7 +10,7 @@
 
     <parent>
         <groupId>org.demosecurity</groupId>
-        <artifactId>root</artifactId>
+        <artifactId>demo-security</artifactId>
         <version>0.1.0</version>
         <relativePath>..</relativePath>
     </parent>
