@@ -6,6 +6,7 @@
 package org.demosecurity.security.service;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Base64;
 import javax.servlet.http.HttpServletRequest;
 import org.demosecurity.security.crypto.PasswordEncoder;
@@ -15,6 +16,7 @@ import org.demosecurity.security.exception.MissingAuthorizationHeaderException;
 import org.demosecurity.security.exception.UserNotExistException;
 import org.demosecurity.security.exception.WrongPasswordException;
 import org.demosecurity.security.model.Authentication;
+import org.demosecurity.security.model.Role;
 import org.demosecurity.security.model.TokenDetails;
 import org.demosecurity.security.model.User;
 import org.slf4j.Logger;
@@ -71,7 +73,7 @@ public abstract class TokenAuthenticationService implements AuthenticationServic
             logger.debug("{}", authentication);
             return authentication;
         } else {
-            throw new MissingAuthorizationHeaderException();
+            return new Authentication("GuestUser", request.getServletPath(), request.getMethod(), Arrays.asList(Role.GUEST_ROLE));
         }
     }
     
