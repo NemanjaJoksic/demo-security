@@ -1,0 +1,10 @@
+target
+logs
+out
+memory
+.settings
+.classpath
+.project
+.idea
+*.iml
+/nbproject/
